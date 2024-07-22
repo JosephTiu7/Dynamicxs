@@ -80,7 +80,7 @@ export default function App() {
                         element={<Order_checking />}
                     /> */}
 
-                    {isAuthenticated && isStudent ? (
+                    {isAuthenticated && isStudent && (
                         <>
                             <Route path="/about" element={<About />} />
                             <Route path="/checkout" element={<Checkout />} />
@@ -90,13 +90,6 @@ export default function App() {
                             <Route path="/lunch" element={<Lunch />} />
                             <Route path="/snacks" element={<Snacks />} />
                             <Route path="/dinner" element={<Dinner />} />
-                        </>
-                    ) : (
-                        <>
-                            <Route
-                                path="*"
-                                element={<Navigate to="/error401" replace />}
-                            />
                         </>
                     )}
 

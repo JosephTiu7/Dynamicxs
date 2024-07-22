@@ -59,7 +59,6 @@ export function SignIn() {
                 setError(studentData.message)
             }
         } catch (err) {
-            setError(err.message)
             setTimeout(() => {
                 setError('')
             }, 5000)
