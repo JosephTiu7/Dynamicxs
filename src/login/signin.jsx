@@ -1,58 +1,52 @@
 import { Alert, Button, Checkbox, Dialog, DialogBody, DialogFooter, DialogHeader, Input, Spinner, Typography } from "@material-tailwind/react";
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import burgerImage from "../image/burger.png";
+import StudentService from "../service/StudentService";
+import { useAuth } from "../AuthProvider";
 
-const handleLoginRequest = async (idNumber, password, setLoading, setError, navigate) => {
-  setLoading(true);
-  setError(null); // Reset error message before new login attempt
-  try {
-    const response = await fetch("http://localhost:8080/student/insertStudent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        idNumber,
-        password,
-      }),
-    });
-
-    setLoading(false);
-
-    if (response.status === 200) {
-      console.log("Login Successful!");
-      if (idNumber.includes('#')) {
-        navigate('/Orders');
-      } else {
-        navigate('/home');
-      }
-    } else {
-      throw new Error(`Login failed with status code ${response.status}`);
-    }
-  } catch (error) {
-    setLoading(false);
-    console.error("Error during login:", error);
-    setError("Login failed. Please check your ID number and password.");
-  }
-};
 
 export function SignIn() {
   const navigate = useNavigate();
   const [idNumber, setIdNumber] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null); // State to store error message
-  const [open, setOpen] = useState(false); // State to manage the modal visibility
+  const updateAuthState = useAuth();
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
 
-  const handleSubmit = (event) => {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      updateAuthState(token);
+    }
+  }, [updateAuthState]);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!idNumber || !password) {
       alert("Please enter both ID number and password.");
       return;
     }
 
-    handleLoginRequest(idNumber, password, setLoading, setError, navigate);
+    try {
+      const studentData = await StudentService.login(idNumber, password, setLoading, setError, navigate);
+      if (studentData.token) {
+        localStorage.setItem('token', studentData.token);
+        updateAuthState(studentData.token);
+        localStorage.setItem('refreshToken', studentData.refreshToken);
+        localStorage.setItem('role', studentData.role);
+        navigate("/home");
+        window.location.reload();
+      } else {
+        setError(studentData.message);
+      }
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => {
+        setError('');
+      }, 5000);
+    }
   };
 
   const handleOpen = () => setOpen(!open);

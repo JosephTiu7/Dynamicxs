@@ -1,7 +1,7 @@
 import { Footer, Navbar } from "@/widgets/layout";
 import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/20/solid';
 
-export function Profile() {
+export function About() {
   return (
     <>
         <div className="container absolute left-2/4 z-10 mx-auto -translate-x-2/4 p-4">
@@ -116,4 +116,4 @@ export function Profile() {
   );
 }
 
-export default Profile;
+export default About;

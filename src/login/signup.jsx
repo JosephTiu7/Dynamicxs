@@ -5,45 +5,24 @@ import {
   Spinner,
   Typography,
 } from "@material-tailwind/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import pizzaImage from "../image/pizza.png";
+import StudentService from "../service/StudentService"
 
-const handleRegisterRequest = async (email, idNumber, password, setLoading, navigate) => {
-  setLoading(true);
-  try {
-    const response = await fetch("http://localhost:8080/student/insertStudent", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        idNumber,
-        password,
-      }),
-    });
 
-    setLoading(false);
 
-    if (response.status === 200) {
-      console.log("Registration Successful!");
-      navigate("/home");
-    } else {
-      throw new Error(`Registration failed with status code ${response.status}`);
-    }
-  } catch (error) {
-    setLoading(false);
-    console.error("Error during registration:", error);
-    alert("Registration failed. Please check your inputs and try again.");
-  }
-};
 
 export function SignUp() {
+
+  
+  const [formData, setFormData] = useState({
+        idNumber: '',
+        email: '',
+        password: ''
+    });
+
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [idNumber, setIdNumber] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -62,24 +41,47 @@ export function SignUp() {
     return passwordRegex.test(password);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const newErrors = {};
-    if (!email || !validateEmail(email)) {
-      newErrors.email = "Invalid email format";
-    }
-    if (!idNumber || !validateIdNumber(idNumber)) {
-      newErrors.idNumber = "Invalid ID number format";
-    }
-    if (!password || !validatePassword(password)) {
-      newErrors.password = "Password must contain at least 1 uppercase letter";
+  const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try{
+        const newErrors = {};
+        if (!formData.email || !validateEmail(formData.email)) {
+          newErrors.email = "Invalid email format";
+        }
+        if (!formData.idNumber || !validateIdNumber(formData.idNumber)) {
+          newErrors.idNumber = "Invalid ID number format";
+        }
+        if (!formData.password || !validatePassword(formData.password)) {
+          newErrors.password = "Password must contain at least 1 uppercase letter";
+        }
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+          await StudentService.register(formData, setLoading, navigate);
+        }else{
+          console.log(newErrors);
+        }
+
+        setFormData({
+                idNumber: '',
+                email: '',
+                password: '',
+            });
+        alert('User registered successfully');
+        navigate('/signin');
+    }catch(err){
+        console.error('Error registering user:', err);
+        alert('An error occurred while registering user');
     }
 
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      handleRegisterRequest(email, idNumber, password, setLoading, navigate);
-    }
+    
+    
   };
 
   return (
@@ -106,8 +108,9 @@ export function SignUp() {
             <Input
               size="lg"
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              name="email"
+              onChange={handleInputChange}
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -124,8 +127,9 @@ export function SignUp() {
             <Input
               size="lg"
               placeholder="ID number"
-              value={idNumber}
-              onChange={(e) => setIdNumber(e.target.value)}
+              name="idNumber"
+              value={formData.idNumber}
+              onChange={handleInputChange}
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -141,9 +145,10 @@ export function SignUp() {
             <Input
               type="password"
               size="lg"
+              name="password"
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleInputChange}
               className="!border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
