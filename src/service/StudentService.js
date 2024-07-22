@@ -1,105 +1,124 @@
-import axios from "axios";
+import axios from 'axios'
 
+const baseUrl = import.meta.env.VITE_BASE_URL
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
-
-class StudentService{
-
+class StudentService {
     static async login(idNumber, password, setLoading, setError, navigate) {
-        setLoading(true);
-        setError(null); // Reset error message before new login attempt
-
+        setLoading(true)
+        setError(null) // Reset error message before new login attempt
+        console.log(idNumber)
+        console.log(password)
         try {
-            const response = await axios.post(`${baseUrl}auth/signin`, { idNumber, password });
+            const response = await axios.post(`${baseUrl}auth/signin`, {
+                idNumber,
+                password,
+            })
+            console.log(response.data)
 
-            setLoading(false);
+            setLoading(false)
 
             // Check if response is JSON and status code is 200
-            if (response.headers['content-type']?.includes('application/json') && response.status === 200) {
-                return response.data;
+            if (
+                response.headers['content-type']?.includes(
+                    'application/json'
+                ) &&
+                response.status === 200
+            ) {
+                return response.data
             } else {
-                throw new Error(`Unexpected response from server. Status code: ${response.status}`);
+                throw new Error(
+                    `Unexpected response from server. Status code: ${response.status}`
+                )
             }
         } catch (error) {
-            setLoading(false);
-            console.error('Error during login:', error);
+            setLoading(false)
+            console.error('Error during login:', error)
 
             // Set user-friendly error message
-            setError(error.response?.data?.message || error.message || 'Login failed. Please check your ID number and password.');
+            setError(
+                error.response?.data?.message ||
+                    error.message ||
+                    'Login failed. Please check your ID number and password.'
+            )
         }
     }
 
     static async register(formData, setLoading, navigate) {
-        setLoading(true);
-        var result = "";
+        setLoading(true)
+        var result = ''
         try {
-            const response = await axios.post(`${baseUrl}auth/signup`, formData);
-            setLoading(false); 
-            
-            if (response.headers.get("content-type")?.includes("application/json")) {
-                return result;
+            const response = await axios.post(`${baseUrl}auth/signup`, formData)
+            setLoading(false)
+
+            if (
+                response.headers
+                    .get('content-type')
+                    ?.includes('application/json')
+            ) {
+                return result
             } else {
-                result = { message: `Server returned non-JSON response with status code ${response.status}` };
+                result = {
+                    message: `Server returned non-JSON response with status code ${response.status}`,
+                }
             }
 
             if (response.status === 200) {
-                console.log("Registration Successful!");
+                console.log('Registration Successful!')
             } else {
-                throw new Error(`Registration failed with status code ${response.status}`);
+                throw new Error(
+                    `Registration failed with status code ${response.status}`
+                )
             }
         } catch (error) {
-            setLoading(false);
-            console.error("Error during registration:", error);
+            setLoading(false)
+            console.error('Error during registration:', error)
         }
-        
-    };
+    }
 
-
-    static async getAllProduct(token){
-        try{
+    static async getAllProduct(token) {
+        try {
             const res = await axios.get(`${StudentService.baseUrl}product`, {
-                headers: {Authorization: `Bearer ${token}`}
+                headers: { Authorization: `Bearer ${token}` },
             })
-            return res.data;
-
-        }catch(err){
-            throw err;
+            return res.data
+        } catch (err) {
+            throw err
         }
     }
 
     /**AUTHENTICATION CHECKER */
-    static logout(){
+    static logout() {
         localStorage.removeItem('token')
         localStorage.removeItem('refreshToken')
         localStorage.removeItem('role')
     }
 
-    static isAuthenticated(){
+    static isAuthenticated() {
         const token = localStorage.getItem('token')
         return !!token
     }
 
-    static isStaff(){
+    static isStaff() {
         const role = localStorage.getItem('role')
         return role === 'STAFF'
     }
 
-    static isStudent(){
+    static isStudent() {
         const role = localStorage.getItem('role')
         return role === 'STUDENT'
     }
 
-    static studentOrStaffOnly(){
-        return this.isAuthenticated() && (this.isStaff() || this.isStudent());
+    static studentOrStaffOnly() {
+        return this.isAuthenticated() && (this.isStaff() || this.isStudent())
     }
 
-    static studentOnly(){
-        return this.isAuthenticated() && this.isStaff();
+    static studentOnly() {
+        return this.isAuthenticated() && this.isStaff()
     }
 
-    static staffOnly(){
-        return this.isAuthenticated() && this.isStaff();
+    static staffOnly() {
+        return this.isAuthenticated() && this.isStaff()
     }
 }
 
-export default StudentService;
+export default StudentService
