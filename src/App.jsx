@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Breakfast from './components/Breakfast'
 import Dinner from './components/Dinner'
 import Lunch from './components/Lunch'
@@ -20,6 +20,7 @@ import StudentService from './service/StudentService'
 import Order_checking from './staffpages/Order_checking.jsx'
 import OrderDetails from './staffpages/OrderDetails.jsx'
 import Inventory from './staffpages/Inventory.jsx'
+import Error401 from './errorpages/error401.jsx'
 import { AuthProvider, useAuth } from './AuthProvider.jsx'
 export default function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(
@@ -46,7 +47,7 @@ export default function App() {
                     <Route path="/" element={<SignIn />} />
                     <Route path="/signin" element={<SignIn />} />
                     <Route path="/signup" element={<SignUp />} />
-
+                    <Route path="/error401" element={<Error401 />} />
                     {/* <Route path="/about" element={<About />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/order" element={<Order />} />
@@ -79,7 +80,7 @@ export default function App() {
                         element={<Order_checking />}
                     /> */}
 
-                    {isAuthenticated && isStudent && (
+                    {isAuthenticated && isStudent ? (
                         <>
                             <Route path="/about" element={<About />} />
                             <Route path="/checkout" element={<Checkout />} />
@@ -89,6 +90,13 @@ export default function App() {
                             <Route path="/lunch" element={<Lunch />} />
                             <Route path="/snacks" element={<Snacks />} />
                             <Route path="/dinner" element={<Dinner />} />
+                        </>
+                    ) : (
+                        <>
+                            <Route
+                                path="*"
+                                element={<Navigate to="/error401" replace />}
+                            />
                         </>
                     )}
 
