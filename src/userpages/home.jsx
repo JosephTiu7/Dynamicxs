@@ -64,7 +64,7 @@ export function Home() {
 
       <div className="relative flex h-screen content-center items-center justify-center pt-16 pb-32">
         <div className="absolute top-0 h-full w-full bg-[url('/img/background-3.png')] bg-cover bg-center" />
-        <div className="absolute top-0 h-full w-full bg-[#F9E4C9] bg-cover bg-center" />
+        <div className="absolute top-0 h-full w-full bg-[#FCE444] bg-cover bg-center" />
         <div className="max-w-8xl container relative mx-auto">
           <div className="flex flex-wrap items-center">
             <div className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
@@ -77,7 +77,7 @@ export function Home() {
               <Typography variant="lead" color="black" className="mt-4 text-xl text-black">
               Enjoy the food with your friends in an affordable price.
               </Typography>
-              <Button href="/checkout" variant="filled" className="bg-[#F97108]">Explore</Button>
+              <Button href="/order" variant="filled" className="bg-[#7F0404]">Explore</Button>
             </div>
           </div>
         </div>
@@ -150,7 +150,7 @@ export function Home() {
     </div>
           <div className="mt-20 flex flex-wrap items-center">
             <div className="mx-auto -mt-8 w-full px-4 md:w-5/12">
-              <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#F97108] p-2 text-center shadow-lg">
+              <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#7F0404] p-2 text-center shadow-lg">
                 <FingerPrintIcon className="h-8 w-8 text-white" />
               </div>
               <Typography
@@ -165,7 +165,7 @@ export function Home() {
               and top-notch service, we're your go-to for delicious meals delivered straight
                to your doorstep. Experience the difference with us today!"
               </Typography>
-              <Button variant="filled" className="bg-[#F97108]">read more</Button>
+              <Button variant="filled" className="bg-[#7F0404]">read more</Button>
             </div>
             <div className="mx-auto mt-24 flex w-full justify-center px-4 md:w-4/12 lg:mt-0">
               <Card className="shadow-lg border shadow-gray-500/10 rounded-lg">

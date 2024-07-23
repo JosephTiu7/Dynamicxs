@@ -10,10 +10,10 @@ export function About() {
         
       <section className="relative block h-[11vh]">
         <div className="bg-profile-background absolute top-0 h-full w-full bg-[url('/img/background-3.png')] bg-cover bg-center scale-105" />
-        <div className="absolute top-0 h-full w-full bg-[#F9E4C9] bg-cover bg-center" />
+        <div className="absolute top-0 h-full w-full bg-[#FFCF23] bg-cover bg-center" />
       </section>
 
-      <div className="relative isolate overflow-hidden bg-white px-6 py-24 sm:py-32 lg:overflow-visible lg:px-0">
+      <div className="relative isolate overflow-hidden bg-[#FFCF23] px-6 py-24 sm:py-32 lg:overflow-visible lg:px-0">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <svg
           className="absolute left-[max(50%,25rem)] top-0 h-[64rem] w-[128rem] -translate-x-1/2 stroke-gray-200 [mask-image:radial-gradient(64rem_64rem_at_top,white,transparent)]"
@@ -44,7 +44,7 @@ export function About() {
         <div className="lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
           <div className="lg:pr-4">
             <div className="lg:max-w-lg">
-              <p className="text-base font-semibold leading-7 text-[#F97108]">Deliveryey</p>
+              <p className="text-base font-semibold leading-7 text-[#7F0404]">Deliveryey</p>
               <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">About us</h1>
               <p className="mt-6 text-xl leading-8 text-gray-700">
               At Deliveryey, we're passionate about delivering more than just food; we deliver convenience, affordability, and,
@@ -70,7 +70,7 @@ export function About() {
               </p>
               <ul role="list" className="mt-8 space-y-8 text-gray-600">
                 <li className="flex gap-x-3">
-                  <CloudArrowUpIcon className="mt-1 h-5 w-5 flex-none text-[#F97108]" aria-hidden="true" />
+                  <CloudArrowUpIcon className="mt-1 h-5 w-5 flex-none text-[#7F0404]" aria-hidden="true" />
                   <span>
                     <strong className="font-semibold text-gray-900">Timely Delivery.</strong> We take pride in our prompt delivery service. 
                     When you order from Deliveryey, 
@@ -78,14 +78,14 @@ export function About() {
                   </span>
                 </li>
                 <li className="flex gap-x-3">
-                  <LockClosedIcon className="mt-1 h-5 w-5 flex-none text-[#F97108]" aria-hidden="true" />
+                  <LockClosedIcon className="mt-1 h-5 w-5 flex-none text-[#7F0404]" aria-hidden="true" />
                   <span>
                     <strong className="font-semibold text-gray-900">Convenience.</strong> Ordering with Deliveryey is quick and easy. 
                     With just a few clicks on our user-friendly app or website, you can have your meal on its way to you in no time.
                   </span>
                 </li>
                 <li className="flex gap-x-3">
-                  <ServerIcon className="mt-1 h-5 w-5 flex-none text-[#F97108]" aria-hidden="true" />
+                  <ServerIcon className="mt-1 h-5 w-5 flex-none text-[#7F0404]" aria-hidden="true" />
                   <span>
                     <strong className="font-semibold text-gray-900">Affordability.</strong> We understand the student budget, which is why we offer competitive 
                     prices and frequent discounts to make eating well more accessible.

@@ -1,8 +1,10 @@
 import { Footer, Navbar } from "@/widgets/layout";
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { Fragment, useState, useEffect  } from "react";
+import { Fragment, useState, useEffect } from "react";
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const products = [
   {
@@ -12,8 +14,8 @@ const products = [
     imageSrc: 'src/image/salad.png',
     imageAlt: "Front of men's Basic Tee in black.",
     price: '₱20',
-    color: 'Order Now',
-    category:'breakfast',
+    color: 'Add Item',
+    category: 'breakfast',
   },
   {
     id: 2,
@@ -21,8 +23,8 @@ const products = [
     href: '/order',
     imageSrc: 'src/image/pizza.png',
     price: '₱30',
-    color: 'Order Now',
-    category:'lunch',
+    color: 'Add Item',
+    category: 'lunch',
   },
   {
     id: 3,
@@ -30,8 +32,8 @@ const products = [
     href: '/order',
     imageSrc: 'src/image/burger.png',
     price: '₱25',
-    color: 'Order Now',
-    category:'snacks',
+    color: 'Add Item',
+    category: 'snacks',
   },
   {
     id: 4,
@@ -39,15 +41,16 @@ const products = [
     href: '/order',
     imageSrc: 'src/image/drinks.png',
     price: '₱25',
-    color: 'Order Now',
-    category:'dinner',
+    color: 'Add Item',
+    category: 'dinner',
   },
   // More products...
-]
+];
 
 export function Order() {
   const [open, setOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [clickedItems, setClickedItems] = useState({});
 
   useEffect(() => {
     fetchOrderItems();
@@ -71,42 +74,51 @@ export function Order() {
         );
       } else {
         const updatedItems = [...prevItems, { ...product, quantity: 1 }];
-  
+
         // Extract numeric value from the price string
         const price = parseFloat(product.price.replace('₱', ''));
-  
+
         axios.post('http://localhost:8080/menu/insertMenu', {
           name: product.name,
           price: price,  // Send numeric price value
           category: product.category,
           // Add other necessary data
         })
-        .then((response) => {
-          console.log('Item added successfully:', response.data);
-        })
-        .catch((error) => {
-          if (error.response) {
-            console.error('Error adding item to cart:', error.response.data);
-            alert(`Error: ${error.response.data.message || 'Failed to add item to cart'}`);
-          } else {
-            console.error('Error adding item to cart:', error.message);
-            alert('Failed to add item to cart');
-          }
-        });
-  
+          .then((response) => {
+            console.log('Item added successfully:', response.data);
+            toast.success('Item added to cart successfully', {
+              position: "bottom-center"
+            });
+            setClickedItems((prevClickedItems) => ({
+              ...prevClickedItems,
+              [product.id]: true,
+            }));
+          })
+          .catch((error) => {
+            if (error.response) {
+              console.error('Error adding item to cart:', error.response.data);
+              toast.error(`Error: ${error.response.data.message || 'Failed to add item to cart'}`, {
+                position: "bottom-center"
+              });
+            } else {
+              console.error('Error adding item to cart:', error.message);
+              toast.error('Failed to add item to cart', {
+                position: "bottom-center"
+              });
+            }
+          });
+
         return updatedItems;
       }
     });
   };
-  
-    
 
   const removeFromCart = (productId) => {
     if (!productId) {
       console.error('Invalid productId:', productId);
       return; // Exit the function early if productId is invalid
     }
-  
+
     // Make HTTP request to delete order item
     axios.delete(`http://localhost:8080/orderitem/deleteOrderItem/${productId}`)
       .then((response) => {
@@ -115,16 +127,25 @@ export function Order() {
           setCartItems((prevItems) =>
             prevItems.filter((item) => item.id !== productId)
           );
+          toast.success('Item removed from cart successfully', {
+            position: "bottom-center"
+          });
+          setClickedItems((prevClickedItems) => ({
+            ...prevClickedItems,
+            [productId]: false,
+          }));
         } else {
           throw new Error(`Failed to remove item from cart: ${response.status}`);
         }
       })
       .catch((error) => {
         console.error('Error removing item from cart:', error);
-        // If request fails, do not update cart items
+        toast.error('Failed to remove item from cart', {
+          position: "bottom-center"
+        });
       });
-  };  
-  
+  };
+
   const getTotal = () => {
     console.log("Cart Items:", cartItems); // Log the cartItems array
     return cartItems.reduce(
@@ -136,9 +157,8 @@ export function Order() {
       },
       0
     );
-  };  
-  
-  
+  };
+
   const updateCartItem = async (productId, quantity) => {
     try {
       const response = await axios.put('http://localhost:8080/orderitem/updateOrderItem', {
@@ -146,40 +166,57 @@ export function Order() {
         quantity: quantity,
       });
       setCartItems(response.data);
+      toast.success('Cart item updated successfully', {
+        position: "bottom-center"
+      });
     } catch (error) {
       console.error('Error updating cart item:', error);
+      toast.error('Failed to update cart item', {
+        position: "bottom-center"
+      });
     }
+  };
+
+  const handleQuantityChange = (productId, quantity) => {
+    if (quantity < 1) return;
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === productId ? { ...item, quantity: quantity } : item
+      )
+    );
+    updateCartItem(productId, quantity);
   };
 
   return (
     <>
+      <ToastContainer />
       <div className="container absolute left-2/4 z-10 mx-auto -translate-x-2/4 p-4">
         <Navbar />
       </div>
 
       <section className="relative block h-[11vh]">
         <div className="bg-profile-background absolute top-0 h-full w-full bg-cover bg-center scale-105" />
-        <div className="absolute top-0 h-full w-full bg-[#F9E4C9] bg-cover bg-center" />
+        <div className="absolute top-0 h-full w-full bg-[#FFCF23] bg-cover bg-center" />
       </section>
-
-      <section>
-        <div className="container mx-auto">
+      
+      <section className="bg-[#FFCF23]">
+        <div className="container mx-auto ">
           <div>
             <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-            <button
-                  type="button"
-                  className="rounded-md bg-[#F97108] px-4 py-2 text-white justify-right"
-                  onClick={() => setOpen(true)}
-                >
-                  View Cart
-                </button>
+              <button
+                type="button"
+                className="rounded-md bg-[#7F0404] px-4 py-2 text-white justify-right"
+                onClick={() => setOpen(true)}
+              >
+                View Cart
+              </button>
               <h1 className="text-4xl font-bold tracking-tight text-gray-900 text-center">Menu</h1>
-              
+
               <h2 className="text-2xl font-bold tracking-tight text-gray-900 text-left">Breakfast</h2>
               <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                 {products.map((product) => (
                   <div key={product.id} className="group relative">
-                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-white lg:aspect-none group-hover:opacity-75 lg:h-80">
+                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-[#FFCF23] lg:aspect-none group-hover:opacity-75 lg:h-80">
                       <img
                         src={product.imageSrc}
                         alt={product.imageAlt}
@@ -194,7 +231,9 @@ export function Order() {
                             {product.name}
                           </button>
                         </h3>
-                        <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                        <p className="mt-1 text-sm text-gray-500">
+                          {clickedItems[product.id] ? 'Added' : product.color}
+                        </p>
                       </div>
                       <p className="text-sm font-medium text-gray-900">{product.price}</p>
                     </div>
@@ -206,7 +245,7 @@ export function Order() {
               <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                 {products.map((product) => (
                   <div key={product.id} className="group relative">
-                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-white lg:aspect-none group-hover:opacity-75 lg:h-80">
+                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-[#FFCF23] lg:aspect-none group-hover:opacity-75 lg:h-80">
                       <img
                         src={product.imageSrc}
                         alt={product.imageAlt}
@@ -221,19 +260,21 @@ export function Order() {
                             {product.name}
                           </button>
                         </h3>
-                        <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                        <p className="mt-1 text-sm text-gray-500">
+                          {clickedItems[product.id] ? 'Added' : product.color}
+                        </p>
                       </div>
                       <p className="text-sm font-medium text-gray-900">{product.price}</p>
                     </div>
                   </div>
                 ))}
               </div>
-              
+
               <h2 className="mt-8 text-2xl font-bold tracking-tight text-gray-900 text-left">Snacks</h2>
               <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                 {products.map((product) => (
                   <div key={product.id} className="group relative">
-                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-white lg:aspect-none group-hover:opacity-75 lg:h-80">
+                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-[#FFCF23] lg:aspect-none group-hover:opacity-75 lg:h-80">
                       <img
                         src={product.imageSrc}
                         alt={product.imageAlt}
@@ -248,7 +289,9 @@ export function Order() {
                             {product.name}
                           </button>
                         </h3>
-                        <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                        <p className="mt-1 text-sm text-gray-500">
+                          {clickedItems[product.id] ? 'Added' : product.color}
+                        </p>
                       </div>
                       <p className="text-sm font-medium text-gray-900">{product.price}</p>
                     </div>
@@ -260,7 +303,7 @@ export function Order() {
               <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                 {products.map((product) => (
                   <div key={product.id} className="group relative">
-                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-white lg:aspect-none group-hover:opacity-75 lg:h-80">
+                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-[#FFCF23] lg:aspect-none group-hover:opacity-75 lg:h-80">
                       <img
                         src={product.imageSrc}
                         alt={product.imageAlt}
@@ -275,7 +318,9 @@ export function Order() {
                             {product.name}
                           </button>
                         </h3>
-                        <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                        <p className="mt-1 text-sm text-gray-500">
+                          {clickedItems[product.id] ? 'Added' : product.color}
+                        </p>
                       </div>
                       <p className="text-sm font-medium text-gray-900">{product.price}</p>
                     </div>
@@ -356,12 +401,28 @@ export function Order() {
                                       <p className="mt-1 text-sm text-gray-500">{item.color}</p>
                                     </div>
                                     <div className="flex flex-1 items-end justify-between text-sm">
-                                      <p className="text-gray-500">Qty {item.quantity}</p>
+                                      <div className="flex items-center">
+                                        <button
+                                          type="button"
+                                          className="font-medium text-[#7F0404] hover:text-[#7F0404]"
+                                          onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                                        >
+                                          -
+                                        </button>
+                                        <p className="text-gray-500 mx-2">Qty {item.quantity}</p>
+                                        <button
+                                          type="button"
+                                          className="font-medium text-[#7F0404] hover:text-[#7F0404]"
+                                          onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                        >
+                                          +
+                                        </button>
+                                      </div>
 
                                       <div className="flex">
                                         <button
                                           type="button"
-                                          className="font-medium text-[#F97108] hover:text-[#F97108]"
+                                          className="font-medium text-[#7F0404] hover:text-[#7F0404]"
                                           onClick={() => removeFromCart(item.id)}
                                         >
                                           Remove
@@ -382,20 +443,27 @@ export function Order() {
                           <p>₱{getTotal()}</p>
                         </div>
                         <div className="mt-6">
-
-                          <a
-                            href="/checkout"
-                            className="flex items-center justify-center rounded-md border border-transparent bg-[#F97108] px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-[#F97108]"
-                          >
-                            Checkout
-                          </a>
-
+                          {cartItems.length > 0 ? (
+                            <a
+                              href="/checkout"
+                              className="flex items-center justify-center rounded-md border border-transparent bg-[#7F0404] px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-[#7F0404]"
+                            >
+                              Checkout
+                            </a>
+                          ) : (
+                            <button
+                              disabled
+                              className="flex items-center justify-center rounded-md border border-transparent bg-gray-400 px-6 py-3 text-base font-medium text-white shadow-sm"
+                            >
+                              Checkout
+                            </button>
+                          )}
                         </div>
                         <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                           <p>
                             <button
                               type="button"
-                              className="font-medium text-[#F97108] hover:text-[#F97108]"
+                              className="font-medium text-[#7F0404] hover:text-[#7F0404]"
                               onClick={() => setOpen(false)}
                             >
                               Exit

@@ -21,7 +21,7 @@ import Order_checking from './staffpages/Order_checking.jsx'
 import OrderDetails from './staffpages/OrderDetails.jsx'
 import Inventory from './staffpages/Inventory.jsx'
 import Error401 from './errorpages/error401.jsx'
-import { AuthProvider, useAuth } from './AuthProvider.jsx'
+import { AuthProvider } from './AuthProvider.jsx'
 export default function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(
         StudentService.isAuthenticated()
