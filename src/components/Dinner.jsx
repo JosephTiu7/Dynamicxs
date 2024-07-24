@@ -1,17 +1,13 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import Nav from '../components/Nav';
-import egg from "../image/huma_rice.jpg";
-import tapsilog from "../image/tapsilog.jpg";
 
 function Dinner() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [products, setProducts] = useState([
-    { name: 'Tapsilog', description: 'Budget Friendly for Students', price: '₱69.00', image: tapsilog },
-    { name: 'Huma w/ Rice', description: 'Flavorful Comfort Meal.', price: '₱89.00', image: egg },
-  ]);
+  const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({ name: '', description: '', price: '', image: null });
+  const [productImage, setProductImage] = useState(null);
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
@@ -35,11 +31,25 @@ function Dinner() {
     setNewProduct({ ...newProduct, [name]: value });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProductImage(reader.result);
+        setNewProduct({ ...newProduct, image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    setProducts([...products, { ...newProduct, image: egg }]); // Assuming the image is egg for simplicity
+    setProducts([...products, newProduct]);
     setIsPopupOpen(false);
     setNewProduct({ name: '', description: '', price: '', image: null });
+    console.log(products);
+    setProductImage(null);
   };
 
   const handleRemoveProduct = (index) => {
@@ -54,31 +64,14 @@ function Dinner() {
       <div className="flex">
         {/* Sidebar */}
         <div className={`bg-orange-50 h-screen w-60 flex flex-col items-center justify-center transition-transform ease-in-out duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-          <button className="px-12 py-7 text-2xl bg-orange-200 rounded-xl shadow-sm mb-4 custom-button" onClick={() => {
-              toggleSidebar();
-              navigate("");
-            }}>
-            Orders
-          </button>
-          <button className="px-12 py-7 text-2xl bg-orange-200 rounded-xl shadow-sm mb-4 custom-button" onClick={() => {
-              toggleSidebar();
-              navigate("/menu");
-            }}>
-            Menu
-          </button>
-          <button className="px-14 pt-4 pb-2.5 text-2xl bg-orange-200 rounded-xl shadow-sm mb-4 custom-button" onClick={() => {
-              toggleSidebar();
-              navigate("/order_history");
-            }}>
-            Order History
-          </button>
         </div>
 
         {/* Main Content */}
         <div className="flex flex-col items-center py-11 bg-amber-100 shadow-sm flex-grow">
           <div className="text-2xl font-bold text-center text-black mb-5">Dinner Choices</div>
           <div className="ml-4">
-            <button className="bg-orange-200 px-4 py-2 rounded mb-2 ml-8" onClick={() => handleButtonClick("/breakfast")}>
+            <button className="bg-orange-200 px-4 py-2 rounded mb-2 ml-8" onClick={() => handleButtonClick("/breakfast")}
+            >
               Breakfast
             </button>
             <button className="bg-orange-200 px-4 py-2 rounded mb-2 ml-8" onClick={() => handleButtonClick("/lunch")}>
@@ -87,7 +80,8 @@ function Dinner() {
             <button className="bg-orange-200 px-4 py-2 rounded mb-2 ml-8" onClick={() => handleButtonClick("/snacks")}>
               Snacks
             </button>
-            <button className={`px-2 py-2 text-2xl rounded-xl shadow-sm mb-4 ml-6 custom-button ${location.pathname === "/dinner" ? 'bg-red-500' : 'bg-orange-200'}`} onClick={() => {
+            <button className={`px-2 py-2 text-2xl rounded-xl shadow-sm mb-4 ml-6 custom-button ${location.pathname === "/dinner" ? 'bg-red-500' : 'bg-orange-200'}`}
+              onClick={() => {
                 toggleSidebar();
                 navigate("/dinner");
               }}>
@@ -113,7 +107,9 @@ function Dinner() {
               </div>
               {products.map((product, index) => (
                 <div key={index} className="grid grid-cols-4 gap-1 md:grid-cols-8 lg:grid-cols-18">
-                  <div className="col-span-2 px-14 py-12 rounded mb-2 ml-8">{product.name}</div>
+                  <div className="col-span-2 px-14 py-12 rounded mb-2 ml-8">
+                  {product.name}
+                  </div>
                   <div className="col-span-2 px-4 py-12 rounded mb-2 ml-6">{product.description}</div>
                   <div className="col-span-2 px-4 py-9 rounded mb-2 ml-6 text-2xl">{product.price}</div>
                   <div className="col-span-2 px-4 py-9 rounded mb-2 ml-6 text-2xl">
@@ -143,6 +139,11 @@ function Dinner() {
               <div className="mb-4">
                 <label className="block text-sm font-bold mb-2">Price</label>
                 <input type="text" name="price" value={newProduct.price} onChange={handleInputChange} className="w-full px-3 py-2 border rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-bold mb-2">Product Image</label>
+                <input type="file" accept="image/*" onChange={handleImageChange} className="mb-4" />
+                {productImage && <img src={productImage} alt="Product Preview" className="h-24 w-24 mb-4" />}
               </div>
               <div className="flex justify-end">
                 <button type="button" className="bg-red-500 text-white px-4 py-2 rounded mr-2" onClick={handleClosePopup}>

@@ -1,39 +1,39 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 
 export default function SideNavigationSearchBar() {
-  const [isSideNavOpen, setIsSideNavOpen] = useState(false)
+  const [isSideNavOpen, setIsSideNavOpen] = useState(false);
 
   return (
     <>
-        <button
-            title="Side navigation"
-            type="button"
-            className={`visible fixed left-6 top-6 z-40 order-10 block h-10 w-10 self-center rounded bg-[#F9E4C9] opacity-100 lg:hidden ${
-              isSideNavOpen
-                ? "visible opacity-100 [&_span:nth-child(1)]:w-6 [&_span:nth-child(1)]:translate-y-0 [&_span:nth-child(1)]:rotate-45 [&_span:nth-child(3)]:w-0 [&_span:nth-child(2)]:-rotate-45 "
-                : ""
-            }`}
-            aria-haspopup="menu"
-            aria-label="Side navigation"
-            aria-expanded={isSideNavOpen ? " true" : "false"}
-            aria-controls="nav-menu-3"
-            onClick={() => setIsSideNavOpen(!isSideNavOpen)}
-          >
-            <div className="absolute top-1/2 left-1/2 w-6 -translate-x-1/2 -translate-y-1/2 transform">
-              <span
-                aria-hidden="true"
-                className="absolute block h-0.5 w-9/12 -translate-y-2 transform rounded-full bg-[#F97108] transition-all duration-300"
-              ></span>
-              <span
-                aria-hidden="true"
-                className="absolute block h-0.5 w-6 transform rounded-full bg-[#F97108] transition duration-300"
-              ></span>
-              <span
-                aria-hidden="true"
-                className="absolute block h-0.5 w-1/2 origin-top-left translate-y-2 transform rounded-full bg-[#F97108] transition-all duration-300"
-              ></span>
-            </div>
-          </button>
+      <button
+        title="Side navigation"
+        type="button"
+        className={`visible fixed left-6 top-6 z-40 order-10 block h-10 w-10 self-center rounded bg-[#F9E4C9] opacity-100 lg:hidden ${
+          isSideNavOpen
+            ? "visible opacity-100 [&_span:nth-child(1)]:w-6 [&_span:nth-child(1)]:translate-y-0 [&_span:nth-child(1)]:rotate-45 [&_span:nth-child(3)]:w-0 [&_span:nth-child(2)]:-rotate-45 "
+            : "" 
+        }`}
+        aria-haspopup="menu"
+        aria-label="Side navigation"
+        aria-expanded={isSideNavOpen ? " true" : "false"}
+        aria-controls="nav-menu-3"
+        onClick={() => setIsSideNavOpen(!isSideNavOpen)}
+      >
+        <div className="absolute top-1/2 left-1/2 w-6 -translate-x-1/2 -translate-y-1/2 transform">
+          <span
+            aria-hidden="true"
+            className="absolute block h-0.5 w-9/12 -translate-y-2 transform rounded-full bg-[#F97108] transition-all duration-300"
+          ></span>
+          <span
+            aria-hidden="true"
+            className="absolute block h-0.5 w-6 transform rounded-full bg-[#F97108] transition duration-300"
+          ></span>
+          <span
+            aria-hidden="true"
+            className="absolute block h-0.5 w-1/2 origin-top-left translate-y-2 transform rounded-full bg-[#F97108] transition-all duration-300"
+          ></span>
+        </div>
+      </button>
       {/*  <!-- Side Navigation --> */}
       <aside
         id="nav-menu-3"
@@ -47,14 +47,13 @@ export default function SideNavigationSearchBar() {
           href="/Homepage"
         >
           <img
-            className="h-12 w-auto" 
+            className="h-12 w-auto"
             src="src/image/image.png"
             alt="Your Company"
             href="Homepage"
           />
         </a>
-        <div className="border-b border-[#F97108] ">
-        </div>
+        <div className="border-b border-[#F97108] "></div>
         <nav
           aria-label="side navigation"
           className="flex-1 divide-y divide-slate-100 overflow-auto"
@@ -117,6 +116,34 @@ export default function SideNavigationSearchBar() {
                   </div>
                 </a>
               </li>
+                <li className="px-3">
+                <a
+                  href="/Order_History"
+                  className="flex items-center gap-3 rounded p-3 text-[#F97108] transition-colors hover:bg-[#F97108] hover:text-[#F9E4C9] focus:bg-[#F97108] aria-[current=page]:bg-[#F97108]  aria-[current=page]:text-[#F9E4C9] "
+                >
+              <div className="flex items-center self-center ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="h-6 w-6"
+                  aria-label="Order History icon"
+                  role="graphics-symbol"
+                            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4.5 6h15M4.5 12h15M4.5 18h15"
+              />
+            </svg>
+            </div>
+              <div className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm">
+                Order History
+                  </div>
+                </a>
+              </li>
             </ul>
           </div>
         </nav>
@@ -133,7 +160,7 @@ export default function SideNavigationSearchBar() {
                 strokeWidth="1.5"
                 stroke="currentColor"
                 className="h-6 w-6"
-                aria-label="Dashboard icon"
+                aria-label="Logout icon"
                 role="graphics-symbol"
               >
                 <path
@@ -143,8 +170,9 @@ export default function SideNavigationSearchBar() {
                 />
               </svg>
             </div>
-            <div 
-            className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm font-medium">
+            <div
+              className="flex w-full flex-1 flex-col items-start justify-center gap-0 overflow-hidden truncate text-sm font-medium"
+            >
               Logout
             </div>
           </a>

@@ -19,7 +19,6 @@ import About from './userpages/about.jsx'
 import StudentService from './service/StudentService'
 import Order_checking from './staffpages/Order_checking.jsx'
 import OrderDetails from './staffpages/OrderDetails.jsx'
-import Inventory from './staffpages/Inventory.jsx'
 import Error401 from './errorpages/error401.jsx'
 import { AuthProvider } from './AuthProvider.jsx'
 export default function App() {
@@ -48,7 +47,7 @@ export default function App() {
                     <Route path="/signin" element={<SignIn />} />
                     <Route path="/signup" element={<SignUp />} />
                     <Route path="/error401" element={<Error401 />} />
-                    {/* <Route path="/about" element={<About />} />
+                    <Route path="/about" element={<About />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/order" element={<Order />} />
                     <Route path="/home" element={<Home />} />
@@ -65,7 +64,6 @@ export default function App() {
                         path="/OrderDetails"
                         element={<OrderDetails />}
                     ></Route>
-                    <Route path="/Inventory" element={<Inventory />}></Route>
                     <Route path="/order_details" element={<Order_Details />} />
                     <Route path="/orders" element={<Orders />} />
                     <Route
@@ -78,9 +76,9 @@ export default function App() {
                     <Route
                         path="/Order_checking"
                         element={<Order_checking />}
-                    /> */}
+                    />
 
-                    {isAuthenticated && isStudent && (
+                    {/*{isAuthenticated && isStudent && (
                         <>
                             <Route path="/about" element={<About />} />
                             <Route path="/checkout" element={<Checkout />} />
@@ -123,7 +121,7 @@ export default function App() {
                             />
                             <Route path="/homepage" element={<Homepage />} />
                         </>
-                    )}
+                    )}*/}
                 </Routes>
             </BrowserRouter>
         </AuthProvider>

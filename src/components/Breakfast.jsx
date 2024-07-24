@@ -1,17 +1,13 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import Nav from '../components/Nav';
-import egg from "../image/egg.jpg";
-import pancake from "../image/pancake.jpg";
 
 function Breakfast() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [products, setProducts] = useState([
-    { name: 'Pancakes', description: 'Affordable and Delicious', price: '₱10.00', image: pancake },
-    { name: 'Sunny Side up Egg', description: 'Affordable Price', price: '₱10.00', image: egg }
-  ]);
+  const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({ name: '', description: '', price: '', image: null });
+  const [productImage, setProductImage] = useState(null);
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
@@ -35,11 +31,25 @@ function Breakfast() {
     setNewProduct({ ...newProduct, [name]: value });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProductImage(reader.result);
+        setNewProduct({ ...newProduct, image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    setProducts([...products, { ...newProduct, image: pancake }]); // Assuming the image is pancake for simplicity
+    setProducts([...products, newProduct]);
     setIsPopupOpen(false);
     setNewProduct({ name: '', description: '', price: '', image: null });
+    console.log(products);
+    setProductImage(null);
   };
 
   const handleRemoveProduct = (index) => {
@@ -98,7 +108,9 @@ function Breakfast() {
               </div>
               {products.map((product, index) => (
                 <div key={index} className="grid grid-cols-4 gap-1 md:grid-cols-8 lg:grid-cols-18">
-                  <div className="col-span-2 px-14 py-12 rounded mb-2 ml-8">{product.name}</div>
+                  <div className="col-span-2 px-14 py-12 rounded mb-2 ml-8">
+                  {product.name}
+                  </div>
                   <div className="col-span-2 px-4 py-12 rounded mb-2 ml-6">{product.description}</div>
                   <div className="col-span-2 px-4 py-9 rounded mb-2 ml-6 text-2xl">{product.price}</div>
                   <div className="col-span-2 px-4 py-9 rounded mb-2 ml-6 text-2xl">
@@ -128,6 +140,11 @@ function Breakfast() {
               <div className="mb-4">
                 <label className="block text-sm font-bold mb-2">Price</label>
                 <input type="text" name="price" value={newProduct.price} onChange={handleInputChange} className="w-full px-3 py-2 border rounded" />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-bold mb-2">Product Image</label>
+                <input type="file" accept="image/*" onChange={handleImageChange} className="mb-4" />
+                {productImage && <img src={productImage} alt="Product Preview" className="h-24 w-24 mb-4" />}
               </div>
               <div className="flex justify-end">
                 <button type="button" className="bg-red-500 text-white px-4 py-2 rounded mr-2" onClick={handleClosePopup}>
